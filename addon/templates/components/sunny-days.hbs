@@ -1,0 +1,56 @@
+<ol class="sunny-days--daysofweek">
+    <li class="sunny-days--nameofday">Sun</li>
+    <li class="sunny-days--nameofday">Mon</li>
+    <li class="sunny-days--nameofday">Tue</li>
+    <li class="sunny-days--nameofday">Wed</li>
+    <li class="sunny-days--nameofday">Thu</li>
+    <li class="sunny-days--nameofday">Fri</li>
+    <li class="sunny-days--nameofday">Sat</li>
+</ol>
+
+{{#with (hash
+   component=(or intervalComponent (component 'sunny-day'))
+   ) as |defaults|}}
+
+    <ol class="sunny-days--days">
+        {{#each days as |day|}}
+
+            {{#with (hash
+               component=        defaults.component
+               is-selected=      (moment-same selection day 'day')
+               is-highlighted=   (or   (moment-between day start end)
+                                   (moment-same day start)
+                                   (moment-same day end)
+                                 )
+               on-select=        (action 'selectDay')
+               is-same-month=    (moment-same _date day 'month')
+               ) as |interval|}}
+
+                {{#if hasBlock}}
+
+                    {{yield day interval}}
+
+                {{else}}
+
+                    {{#if interval.is-same-month}}
+
+                        {{interval.component day
+                          is-selected=    interval.is-selected
+                          is-highlighted= interval.is-highlighted
+                          on-select=      interval.on-select
+                        }}
+
+                    {{else}}
+
+                        {{#interval.component day is-empty=true}}{{/interval.component}}
+
+                    {{/if}}
+
+                {{/if}}
+
+            {{/with}}
+
+        {{/each}}
+    </ol>
+
+{{/with}}
