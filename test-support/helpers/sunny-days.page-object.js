@@ -9,19 +9,19 @@ export default class SunnyDaysPageObject {
   }
 
   emptyCount() {
-    return this.$(`${this.prefix}.sunny-day.--is-empty`).length;
+    return this.$(`${this.prefix}.sunny-day.sunny-day--is-empty`).length;
   }
 
   notEmptyCount() {
-    return this.$(`${this.prefix}.sunny-day`).not('.--is-empty').length;
+    return this.$(`${this.prefix}.sunny-day`).not('.sunny-day--is-empty').length;
   }
 
   disabledCount() {
-    return this.$(`${this.prefix}.sunny-day.--is-disabled`).length;
+    return this.$(`${this.prefix}.sunny-day.sunny-day--is-disabled`).length;
   }
 
   notDisabledCount() {
-    return this.$(`${this.prefix}.sunny-day`).not('.--is-disabled').length;
+    return this.$(`${this.prefix}.sunny-day`).not('.sunny-day--is-disabled').length;
   }
 
   days() {
@@ -34,11 +34,11 @@ export default class SunnyDaysPageObject {
 
   isSelected(date) {
     let datetime = date.format(HTML5_DATETIME_FORMAT);
-    return this.$(`${this.prefix}.sunny-day[data-datetime="${datetime}"]`).hasClass('--is-selected');
+    return this.$(`${this.prefix}.sunny-day[data-datetime="${datetime}"]`).hasClass('sunny-day--is-selected');
   }
 
   highlighted() {
-    return this.$(`${this.prefix}.--is-highlighted`).map(trimText).toArray();
+    return this.$(`${this.prefix}.sunny-day--is-highlighted`).map(trimText).toArray();
   }
 
   selectDay(day) {

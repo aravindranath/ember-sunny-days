@@ -11,11 +11,11 @@ const SunnyDay = Ember.Component.extend({
   attributeBindings: ['data-datetime'],
   classNames: ['sunny-day'],
   classNameBindings: [
-    'is-selected:--is-selected',
-    'is-disabled:--is-disabled',
-    'is-now:--is-now',
-    'is-empty:--is-empty',
-    'is-highlighted:--is-highlighted'
+    'is-selected:sunny-day--is-selected',
+    'is-disabled:sunny-day--is-disabled',
+    'is-now:sunny-day--is-now',
+    'is-empty:sunny-day--is-empty',
+    'is-highlighted:sunny-day--is-highlighted'
   ],
 
   format: 'D',

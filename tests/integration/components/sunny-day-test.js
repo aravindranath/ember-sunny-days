@@ -78,5 +78,5 @@ test('is-hightlighted class', function(assert){
 
   this.render(hbs`{{sunny-day date is-highlighted=true}}`);
 
-  assert.ok(this.$('.sunny-day').hasClass('--is-highlighted'), 'has is-highlighted class');
+  assert.ok(this.$('.sunny-day').hasClass('sunny-day--is-highlighted'), 'has is-highlighted class');
 });

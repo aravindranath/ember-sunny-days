@@ -17,11 +17,11 @@ export default class SunnyDayPageObject {
   }
 
   isSelected() {
-    return this.selector().hasClass('--is-selected');
+    return this.selector().hasClass('sunny-day--is-selected');
   }
 
   isNow() {
-    return this.selector().hasClass('--is-now');
+    return this.selector().hasClass('sunny-day--is-now');
   }
 
   selectDate() {

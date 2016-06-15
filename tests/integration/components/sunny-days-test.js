@@ -99,7 +99,7 @@ test('it should accept a selection date attribute', function(assert){
   this.set('date', date);
   this.render(hbs`{{sunny-days date selection=date}}`);
 
-  assert.ok(this.$('.--is-selected:contains(14)').length, '14th is selected');
+  assert.ok(this.$('.sunny-day--is-selected:contains(14)').length, '14th is selected');
 
 });
 
@@ -122,7 +122,7 @@ test('it should accept start and end arguments', function(assert){
     {{/sunny-days}}
   `);
 
-  assert.equal(this.$('.--is-highlighted').length, 8, '8 days are highlighted');
+  assert.equal(this.$('.sunny-day--is-highlighted').length, 8, '8 days are highlighted');
   assert.deepEqual(this.component.highlighted(), [ '10', '11', '12', '13', '14', '15', '16', '17' ], 'highlighted days');
 });
 
@@ -138,7 +138,7 @@ test('it should highlight elements with default layout', function(assert){
 
   this.render(hbs`{{sunny-days date start=start end=end}}`);
 
-  assert.equal(this.$('.--is-highlighted').length, 8, '8 days are highlighted');
+  assert.equal(this.$('.sunny-day--is-highlighted').length, 8, '8 days are highlighted');
   assert.deepEqual(this.component.highlighted(), [ '10', '11', '12', '13', '14', '15', '16', '17' ], 'highlighted days');
 });
 
