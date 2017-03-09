@@ -1,0 +1,9 @@
+.sunny-days {
+  width: 200px;
+}
+
+.sunny-days--nameofday {
+  width: 30px;
+  height: 30px;
+  display: table-cell;
+}

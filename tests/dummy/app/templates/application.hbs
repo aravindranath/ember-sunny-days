@@ -1,3 +1,13 @@
-<h2 id="title">Welcome to Ember</h2>
-
-{{outlet}}
+{{sunny-pikaday 
+    date=date
+    on-select=(action "changeDate")
+    format="DD/MM/YYYY"
+    showTwoMonths=true
+}}
+<br/>
+{{sunny-pikaday 
+    date=date
+    on-select=(action "changeDate")
+    format="DD/MMM/YYYY"
+    disabled=false
+}}

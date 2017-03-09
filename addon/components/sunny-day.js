@@ -33,8 +33,11 @@ const SunnyDay = Ember.Component.extend({
     }
   }),
 
-  'is-now': computed('date', 'now', {
+  'is-now': computed('date', 'now', 'is-empty', {
     get() {
+      if (this.get('is-empty')) {
+        return false;
+      }
       let date = this.get('date');
       if (date) {
         return date.isSame(this.get('now'), 'day');
@@ -42,8 +45,11 @@ const SunnyDay = Ember.Component.extend({
     }
   }),
 
-  'is-selected': computed('date', 'selection', {
+  'is-selected': computed('date', 'selection', 'is-empty', {
     get() {
+      if (this.get('is-empty')) {
+        return false;
+      }
       let date = this.get('date');
       if (date) {
         return date.isSame(this.get('selection'), 'day');

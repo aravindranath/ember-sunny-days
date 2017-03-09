@@ -1,0 +1,69 @@
+{{#basic-dropdown 
+  horizontalPosition="auto"
+  verticalPosition="below"
+  disabled=disabled
+  as |dropdown|
+}}
+  {{#dropdown.trigger}}
+    {{one-way-input value=formatedSelectedDate disabled=disabled placeholder=format update=(action (mut value))}}
+  {{/dropdown.trigger}}
+  {{#dropdown.content}}
+    {{#if showTwoMonths}}
+      <div class="twoMonthView">
+        <div class="first-pikaday">
+          <ol class="sunny-days--currentMonth">
+            <li class="prev" onclick={{action "previousMonth"}}>«</li>
+            <li class="sunny-days--nameofmonth">{{currentMonthName}}</li>
+          </ol>
+          {{#if hasBlock}}
+            {{#sunny-days date=_date format=format selection=date on-select=(action "sendDate") as |day interval|}}
+              {{yield day (hash
+                interval=interval
+                select=(action "sendDate" day)
+              )}}
+            {{/sunny-days}}
+          {{else}}
+            {{sunny-days date=_date format=format selection=date on-select=(action "sendDate")}}
+          {{/if}}
+        </div>
+        <div class="second-pikaday"> 
+          <ol class="sunny-days--currentMonth">
+            <li class="next" onclick={{action "nextMonth"}}>»</li>
+            <li class="sunny-days--nameofmonth">{{nextMonthName}}</li>
+          </ol>
+          {{#if hasBlock}}
+            {{#sunny-days date=nextMonth format=format selection=date on-select=(action "sendDate") as |day interval|}}
+              {{yield day (hash
+                interval=interval
+                select=(action "sendDate" day)
+              )}}
+            {{/sunny-days}}
+          {{else}}
+            {{sunny-days date=nextMonth format=format selection=date on-select=(action "sendDate")}}
+          {{/if}}
+        </div>
+      </div>
+      {{else}}
+      <div class="singleMonthView">
+        <div class="single-pikaday">
+          <ol class="sunny-days--currentMonth">
+            <li class="prev" onclick={{action "previousMonth"}}>«</li>
+            <li class="next" onclick={{action "nextMonth"}}>»</li>
+            <li class="sunny-days--nameofmonth">{{currentMonthName}}</li>
+          </ol>
+          {{#if hasBlock}}
+            {{#sunny-days date=_date format=format selection=date on-select=(action "sendDate") as |day interval|}}
+              {{yield day (hash
+              interval=interval
+              select=(action "sendDate" day)
+            )}}
+            {{/sunny-days}}
+          {{else}}
+            {{sunny-days date=_date format=format selection=date on-select=(action "sendDate")}}
+          {{/if}}
+        </div>
+      </div>
+    {{/if}}
+  {{/dropdown.content}}
+{{/basic-dropdown}}
+
