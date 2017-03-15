@@ -38,12 +38,12 @@ export default Ember.Component.extend({
     return date ? moment(date).format(this.get('format')) : '';
   }),
   disablePreviousMonthNavigation: computed('_date', function() {
-    if(moment(this.get('_date')).isAfter(this.get('startDate'))) {
+    if((moment(this.get('_date')).isAfter(this.get('startDate'))) || (!this.get('startDate'))) {
       return true;
     }
   }),
   disableNextMonthNavigation: computed('_date', function() {
-    if(moment(this.get('_date')).isBefore(this.get('endDate'))) {
+    if((moment(this.get('_date')).isBefore(this.get('endDate'))) || (!this.get('endDate'))) {
       return true;
     }
   }),
@@ -104,8 +104,13 @@ export default Ember.Component.extend({
       this.set('interval', zoomInTo);
     },
     zoomOut(zoomOutTo, date) {
-      if((date.isBefore(this.get('startDate'))) || (date.isAfter(this.get('endDate')))) {
-        return false;
+      if(this.get('startDate') || this.get('endDate')) {
+        if((date.isBefore(this.get('startDate'))) || (date.isAfter(this.get('endDate')))) {
+          return false;
+        } else {
+          this.set('_date', date);
+          this.set('interval', zoomOutTo);
+        }
       } else {
         this.set('_date', date);
         this.set('interval', zoomOutTo);
