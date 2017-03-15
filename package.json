@@ -46,14 +46,15 @@
     "ember-addon"
   ],
   "dependencies": {
+    "ember-basic-dropdown": "0.30.2",
     "ember-cli-babel": "^5.1.6",
     "ember-cli-htmlbars": "^1.0.3",
+    "ember-composable-helpers": "2.0.0",
     "ember-lodash": "0.0.6",
     "ember-moment": "4.2.1",
-    "ember-truth-helpers": "^1.2.0",
     "ember-one-way-controls": "2.0.0",
-    "ember-basic-dropdown": "0.30.2",
-    "ember-composable-helpers": "2.0.0"
+    "ember-truth-helpers": "^1.2.0",
+    "lodash": "^4.17.4"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"

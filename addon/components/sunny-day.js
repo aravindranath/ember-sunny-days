@@ -32,7 +32,7 @@ const SunnyDay = Ember.Component.extend({
       }
     }
   }),
-
+  
   'is-now': computed('date', 'now', 'is-empty', {
     get() {
       if (this.get('is-empty')) {

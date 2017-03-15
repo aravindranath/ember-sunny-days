@@ -3,6 +3,8 @@
     on-select=(action "changeDate")
     format="DD/MM/YYYY"
     showTwoMonths=true
+    startDate=startDate
+    endDate=endDate
 }}
 <br/>
 {{sunny-pikaday 
@@ -10,4 +12,8 @@
     on-select=(action "changeDate")
     format="DD/MMM/YYYY"
     disabled=false
+    startDate=startDate
+    endDate=endDate
+    horizontalPosition='auto'
+    verticalPosition='below'
 }}

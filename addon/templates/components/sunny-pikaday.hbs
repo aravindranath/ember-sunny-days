@@ -1,6 +1,6 @@
 {{#basic-dropdown 
-  horizontalPosition="auto"
-  verticalPosition="below"
+  horizontalPosition=horizontalPosition
+  verticalPosition=verticalPosition
   disabled=disabled
   as |dropdown|
 }}
@@ -12,34 +12,38 @@
       <div class="twoMonthView">
         <div class="first-pikaday">
           <ol class="sunny-days--currentMonth">
-            <li class="prev" onclick={{action "previousMonth"}}>«</li>
+            {{#if disablePreviousMonthNavigation}}
+              <li class="prev" onclick={{action "previous"}}>«</li>
+            {{/if}}
             <li class="sunny-days--nameofmonth">{{currentMonthName}}</li>
           </ol>
           {{#if hasBlock}}
-            {{#sunny-days date=_date format=format selection=date on-select=(action "sendDate") as |day interval|}}
+            {{#sunny-days date=_date format=format selection=date startDate=startDate endDate=endDate on-select=(action "sendDate") as |day interval|}}
               {{yield day (hash
                 interval=interval
                 select=(action "sendDate" day)
               )}}
             {{/sunny-days}}
           {{else}}
-            {{sunny-days date=_date format=format selection=date on-select=(action "sendDate")}}
+            {{sunny-days date=_date format=format selection=date startDate=startDate endDate=endDate on-select=(action "sendDate")}}
           {{/if}}
         </div>
         <div class="second-pikaday"> 
           <ol class="sunny-days--currentMonth">
-            <li class="next" onclick={{action "nextMonth"}}>»</li>
+            {{#if disableNextMonthNavigation}}
+              <li class="next" onclick={{action "next"}}>»</li>
+            {{/if}}
             <li class="sunny-days--nameofmonth">{{nextMonthName}}</li>
           </ol>
           {{#if hasBlock}}
-            {{#sunny-days date=nextMonth format=format selection=date on-select=(action "sendDate") as |day interval|}}
+            {{#sunny-days date=nextMonth format=format selection=date startDate=startDate endDate=endDate on-select=(action "sendDate") as |day interval|}}
               {{yield day (hash
                 interval=interval
                 select=(action "sendDate" day)
               )}}
             {{/sunny-days}}
           {{else}}
-            {{sunny-days date=nextMonth format=format selection=date on-select=(action "sendDate")}}
+            {{sunny-days date=nextMonth format=format selection=date startDate=startDate endDate=endDate on-select=(action "sendDate")}}
           {{/if}}
         </div>
       </div>
@@ -47,19 +51,77 @@
       <div class="singleMonthView">
         <div class="single-pikaday">
           <ol class="sunny-days--currentMonth">
-            <li class="prev" onclick={{action "previousMonth"}}>«</li>
-            <li class="next" onclick={{action "nextMonth"}}>»</li>
-            <li class="sunny-days--nameofmonth">{{currentMonthName}}</li>
+            {{#if disablePreviousMonthNavigation}}
+              <li class="prev" onclick={{action "previous"}}>«</li>
+            {{/if}}
+            {{#if disableNextMonthNavigation}}
+              <li class="next" onclick={{action "next"}}>»</li>
+            {{/if}}
+            {{#if (eq interval 'month')}}
+                <li class="sunny-days--nameofmonth" onclick={{action "zoomIn" 'year'}}>
+                  <span>{{currentMonthName}}</span>  
+                </li>
+              {{else if (eq interval 'year')}}
+                <li class="sunny-days--nameofmonth" onclick={{action "zoomIn" 'decade'}}>
+                  <span>{{currentYear}}</span> 
+                </li>
+              {{else if (eq interval 'decade')}}
+                <li class="sunny-days--nameofmonth">
+                  <span>{{currentDecade}}</span> 
+                </li>
+            {{/if}}
           </ol>
           {{#if hasBlock}}
-            {{#sunny-days date=_date format=format selection=date on-select=(action "sendDate") as |day interval|}}
+            {{#sunny-days 
+              date=_date 
+              format=format 
+              selection=date 
+              startDate=startDate 
+              endDate=endDate 
+              on-select=(action "sendDate") 
+              as |day interval|
+            }}
               {{yield day (hash
               interval=interval
               select=(action "sendDate" day)
             )}}
             {{/sunny-days}}
           {{else}}
-            {{sunny-days date=_date format=format selection=date on-select=(action "sendDate")}}
+            {{#if (eq interval 'month')}}
+                {{sunny-days date=_date format=format selection=date startDate=startDate endDate=endDate on-select=(action "sendDate")}}
+              {{else if (eq interval 'year')}}
+                <ol class="sunny-months">
+                    {{#each months as |month|}}
+                      {{#with (hash
+                        is-selected=      (moment-same date month 'month')
+                        is-same-month=    (moment-same _date month 'month')
+                        ) as |intervalForMonth|}}
+                          <div class="sunny-month 
+                              {{if intervalForMonth.is-selected 'sunny-month--is-selected'}} 
+                              {{if intervalForMonth.is-same-month 'sunny-month--is-now'}}" 
+                              onclick={{action 'zoomOut' 'month' month}}>
+                            {{moment-format month 'MMM'}}
+                          </div>
+                      {{/with}}
+                    {{/each}}
+                </ol>
+              {{else if (eq interval 'decade')}}
+                <ol class="sunny-years">
+                    {{#each years as |year|}}
+                      {{#with (hash
+                        is-selected=     (moment-same date year 'year')
+                        is-same-year=    (moment-same _date year 'year')
+                        ) as |intervalForYear|}}
+                          <div class="sunny-year 
+                              {{if intervalForYear.is-selected 'sunny-year--is-selected'}} 
+                              {{if intervalForYear.is-same-year 'sunny-year--is-now'}}" 
+                              onclick={{action 'zoomOut' 'year' year}}>
+                            {{moment-format year 'YYYY'}}
+                          </div>
+                      {{/with}}
+                    {{/each}}
+                </ol>
+            {{/if}}
           {{/if}}
         </div>
       </div>
