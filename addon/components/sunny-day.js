@@ -15,7 +15,9 @@ const SunnyDay = Ember.Component.extend({
     'is-disabled:sunny-day--is-disabled',
     'is-now:sunny-day--is-now',
     'is-empty:sunny-day--is-empty',
-    'is-highlighted:sunny-day--is-highlighted'
+    'is-highlighted:sunny-day--is-highlighted',
+    'is-focused:sunny-day--is-focused',
+    'is-weekend:sunny-day--is-weekend'
   ],
 
   format: 'D',
@@ -32,7 +34,7 @@ const SunnyDay = Ember.Component.extend({
       }
     }
   }),
-  
+
   'is-now': computed('date', 'now', 'is-empty', {
     get() {
       if (this.get('is-empty')) {
@@ -53,6 +55,30 @@ const SunnyDay = Ember.Component.extend({
       let date = this.get('date');
       if (date) {
         return date.isSame(this.get('selection'), 'day');
+      }
+    }
+  }),
+
+  'is-focused': computed('date', {
+    get() {
+      if (this.get('is-empty')) {
+        return false;
+      }
+      let date = this.get('date');
+      if (date) {
+        return true;
+      }
+    }
+  }),
+
+  'is-weekend': computed('date', {
+    get() {
+      if (this.get('is-empty')) {
+        return false;
+      }
+      let date = this.get('date');
+      if ((moment(date).isoWeekday() === 6) || (moment(date).isoWeekday() === 7)) {
+        return true;
       }
     }
   }),

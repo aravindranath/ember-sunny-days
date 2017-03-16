@@ -2,16 +2,63 @@ import Ember from 'ember';
 import moment from 'moment';
 import layout from '../templates/components/sunny-pikaday';
 import _range from 'lodash/utility/range';
+import { 
+  EKMixin,
+  keyUp, 
+  keyDown 
+} from 'ember-keyboard';
 
 const { computed } = Ember;
 
-export default Ember.Component.extend({
+const DEFAULT_FORMAT = 'DD/MM/YYYY';
+
+export default Ember.Component.extend(EKMixin, {
   layout,
   classNames: ['sunny-pikaday'],
 
   horizontalPosition: 'auto',
   verticalPosition: 'below',
   interval: 'month',
+
+  _date: computed(function() {
+    return moment();
+  }),
+
+  didReceiveAttrs() {
+    this._super(...arguments);
+
+    let date = this.get('date');
+    let _date = this.get('_date');
+
+    if (date && !date.isSame(_date)) {
+      this.setDate(date);
+    }
+  },
+
+  setDate(date) {
+    let format = this.get('format');
+    let _date, value;
+    if (moment.isMoment(date)) {
+      _date = date.clone();
+      if (format) {
+        value = date.format(format);
+      }
+    } else {
+      if (format) {
+        _date = moment(date, format);
+        value = date;
+      } else {
+        _date = moment(date);
+        value = _date.format(DEFAULT_FORMAT);
+      }
+    }
+    if (value) {
+      this.set('value', value);
+    }
+    this.set('_date', _date);
+  },
+
+  keyboardActivated: computed.readOnly('isOpen'),
 
   currentMonthName: computed('_date', function() {
     return moment(this.get('_date')).format('MMMM YYYY');
@@ -32,10 +79,6 @@ export default Ember.Component.extend({
   }),
   nextMonthName: computed('nextMonth', function() {
     return moment(this.get('nextMonth')).format('MMMM YYYY');
-  }),
-  formatedSelectedDate: computed('date','format', function() {
-    let date = this.get('date');
-    return date ? moment(date).format(this.get('format')) : '';
   }),
   disablePreviousMonthNavigation: computed('_date', function() {
     if((moment(this.get('_date')).isAfter(this.get('startDate'))) || (!this.get('startDate'))) {
@@ -60,17 +103,81 @@ export default Ember.Component.extend({
     return _range(12).map(y => beginningOfDecade.clone().add(y, 'year'));
   }),
 
-  didReceiveAttrs() {
-    this._super(...arguments);
-    let date = this.get('date');
-    if (!date) {
-      this.set('_date', moment());
-    } else {
-      this.set('_date', moment(date));
+  _theDayBeforeToday: Ember.on(keyUp('ArrowLeft'), function(event) {
+    let date = this.get('_date');
+    if(this.get('interval') === 'month') {
+      let theDayBefore = date.clone().subtract(1, 'day');
+      this.set('_date', theDayBefore);
+    } else if(this.get('interval') === 'year') {
+      let theMonthBefore = date.clone().startOf('month').subtract(1, 'month');
+      this.set('_date', theMonthBefore);
+    } else if(this.get('interval') === 'decade') {
+      let theYearBefore = date.clone().startOf('year').subtract(1, 'year');
+      this.set('_date', theYearBefore);
     }
-  },
+  }),
+
+  _theDayAfterToday: Ember.on(keyUp('ArrowRight'), function(event) {
+    let date = this.get('_date');
+    if(this.get('interval') === 'month') {
+      let theDayAfter = date.clone().add(1, 'day');
+      this.set('_date', theDayAfter);
+    } else if(this.get('interval') === 'year') {
+      let theMonthAfter = date.clone().startOf('month').add(1, 'month');
+      this.set('_date', theMonthAfter);
+    } else if(this.get('interval') === 'decade') {
+      let theYearAfter = date.clone().startOf('year').add(1, 'year');
+      this.set('_date', theYearAfter);
+    }
+  }),
+
+  _selectDate: Ember.on(keyUp('Enter'), function(event) {
+    let date = this.get('_date');
+    if(this.get('interval') === 'month') {
+      this.set('date', date);
+    } else if(this.get('interval') === 'year') {
+      this.set('interval', 'month');
+    } else if(this.get('interval') === 'decade') {
+      this.set('interval', 'year');
+    }
+  }),
+
+  _theDayAboveToday: Ember.on(keyUp('ArrowUp'), function(event) {
+    let date = this.get('_date');
+    if(this.get('interval') === 'month') {
+      let theDayAbove = date.clone().subtract(7, 'day');
+      this.set('_date', theDayAbove);
+    } else if(this.get('interval') === 'year') {
+      let theMonthAbove = date.clone().startOf('month').subtract(3, 'month');
+      this.set('_date', theMonthAbove);
+    } else if(this.get('interval') === 'decade') {
+      let theYearAbove = date.clone().startOf('year').subtract(3, 'year');
+      this.set('_date', theYearAbove);
+    }
+  }),
+
+  _theDayBelowToday: Ember.on(keyUp('ArrowDown'), function(event) {
+    let date = this.get('_date');
+    if(this.get('interval') === 'month') {
+      let theDayBelow = date.clone().add(7, 'day');
+      this.set('_date', theDayBelow);
+    } else if(this.get('interval') === 'year') {
+      let theMonthBelow = date.clone().startOf('month').add(3, 'month');
+      this.set('_date', theMonthBelow);
+    } else if(this.get('interval') === 'decade') {
+      let theYearBelow = date.clone().startOf('year').add(3, 'year');
+      this.set('_date', theYearBelow);
+    }
+  }),
 
   actions: {
+    updateInput(value) {
+      this.set('value', value);
+      let date = moment(value, this.get('format'), true);
+      if(date.isValid()) {
+        this.set('_date', date);
+      }
+    },
     sendDate(date) {
       this.sendAction('on-select', date);
     },
@@ -83,8 +190,8 @@ export default Ember.Component.extend({
         let nextYear = date.clone().startOf('year').add(1, 'year');
         this.set('_date', nextYear);
       } else if(this.get('interval') === 'decade') {
-        let nextYear = date.clone().startOf('year').add(10, 'year');
-        this.set('_date', nextYear);
+        let nextDecade = date.clone().startOf('year').add(10, 'year');
+        this.set('_date', nextDecade);
       }
     },
     previous() {
@@ -96,8 +203,8 @@ export default Ember.Component.extend({
         let previousYear = date.clone().startOf('year').subtract(1, 'year');
         this.set('_date', previousYear);
       } else if(this.get('interval') === 'decade') {
-        let previousYear = date.clone().startOf('year').subtract(10, 'year');
-        this.set('_date', previousYear);
+        let previousDecade = date.clone().startOf('year').subtract(10, 'year');
+        this.set('_date', previousDecade);
       }
     },
     zoomIn(zoomInTo) {
@@ -115,6 +222,12 @@ export default Ember.Component.extend({
         this.set('_date', date);
         this.set('interval', zoomOutTo);
       }
+    },
+    onOpen() {
+      this.set('isOpen', true);
+    },
+    onClose() {
+      this.set('isOpen', false);
     }
   }
 });

@@ -23,6 +23,7 @@
                                    (moment-same day end)
                                  )
                on-select=        (action 'selectDay')
+               is-focused=       (moment-same _date day 'day')
                is-same-month=    (moment-same _date day 'month')
                ) as |interval|}}
 
@@ -38,6 +39,7 @@
                           is-selected=    interval.is-selected
                           is-highlighted= interval.is-highlighted
                           on-select=      interval.on-select
+                          is-focused=     interval.is-focused
                         }}
 
                     {{else}}

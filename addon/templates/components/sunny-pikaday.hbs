@@ -2,10 +2,12 @@
   horizontalPosition=horizontalPosition
   verticalPosition=verticalPosition
   disabled=disabled
+  onOpen=(action 'onOpen')
+  onClose=(action 'onClose')
   as |dropdown|
 }}
   {{#dropdown.trigger}}
-    {{one-way-input value=formatedSelectedDate disabled=disabled placeholder=format update=(action (mut value))}}
+    {{one-way-input value=value disabled=disabled placeholder=format update=(action "updateInput")}}
   {{/dropdown.trigger}}
   {{#dropdown.content}}
     {{#if showTwoMonths}}
@@ -94,11 +96,11 @@
                     {{#each months as |month|}}
                       {{#with (hash
                         is-selected=      (moment-same date month 'month')
-                        is-same-month=    (moment-same _date month 'month')
+                        is-focused=       (moment-same _date month 'month')
                         ) as |intervalForMonth|}}
                           <div class="sunny-month 
                               {{if intervalForMonth.is-selected 'sunny-month--is-selected'}} 
-                              {{if intervalForMonth.is-same-month 'sunny-month--is-now'}}" 
+                              {{if intervalForMonth.is-focused 'sunny-month--is-focused'}}" 
                               onclick={{action 'zoomOut' 'month' month}}>
                             {{moment-format month 'MMM'}}
                           </div>
@@ -110,11 +112,11 @@
                     {{#each years as |year|}}
                       {{#with (hash
                         is-selected=     (moment-same date year 'year')
-                        is-same-year=    (moment-same _date year 'year')
+                        is-focused=      (moment-same _date year 'year')
                         ) as |intervalForYear|}}
                           <div class="sunny-year 
                               {{if intervalForYear.is-selected 'sunny-year--is-selected'}} 
-                              {{if intervalForYear.is-same-year 'sunny-year--is-now'}}" 
+                              {{if intervalForYear.is-focused 'sunny-year--is-focused'}}" 
                               onclick={{action 'zoomOut' 'year' year}}>
                             {{moment-format year 'YYYY'}}
                           </div>
