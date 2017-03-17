@@ -134,7 +134,7 @@ export default Ember.Component.extend(EKMixin, {
   _selectDate: Ember.on(keyUp('Enter'), function(event) {
     let date = this.get('_date');
     if(this.get('interval') === 'month') {
-      this.set('date', date);
+      this.set('value', date.format(this.get('format')));
     } else if(this.get('interval') === 'year') {
       this.set('interval', 'month');
     } else if(this.get('interval') === 'decade') {

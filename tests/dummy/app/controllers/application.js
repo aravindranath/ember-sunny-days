@@ -8,6 +8,7 @@ export default Ember.Controller.extend({
 
     this.set('startDate', moment('01/01/2017'));
     this.set('endDate', moment('06/01/2018'));
+    // this.set('date', moment('06/01/2018'));
   },
 
   actions: {
